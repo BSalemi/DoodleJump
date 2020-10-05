@@ -2,13 +2,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const grid = document.querySelector('.grid'),
           doodler = document.createElement('div');
     let doodlerLeftSpace = 50,
-        doodlerBottomSpace = 250,
+        startPoint = 150,
+        doodlerBottomSpace = startPoint,
         isGameOver = false,
         platformCount = 5,
         platforms = [],
         upTimerId,
         downTimerId,
-        isJumping = true
+        leftTimerId,
+        isJumping = true,
+        isGoingLeft = false,
+        isGoingRight = false
 
     function createDoodler(){
         grid.appendChild(doodler);
@@ -58,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         upTimerId = setInterval(function (){
             doodlerBottomSpace += 20
             doodler.style.bottom = doodlerBottomSpace + 'px'
-            if (doodlerBottomSpace > 350) {
+            if (doodlerBottomSpace > startPoint + 200) {
                 fall()
             }
         }, 30)
@@ -79,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     (doodlerBottomSpace >=  platform.bottom) && (doodlerBottomSpace <= platform.bottom + 15) && 
                     ((doodlerLeftSpace + 60) >= platform.left) && (doodlerLeftSpace <= (platform.left + 85)) && !isJumping
                 ) {
+                    startPoint = doodlerBottomSpace
                     jump()
                 }
             })
@@ -94,12 +99,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function control(e){
         if(e.key === "ArrowLeft"){
-            //move left
+            moveLeft()
         } else if(e.key="ArrowRight"){
             //move right
         } else if(e.key === "ArrowUp"){
             // moveStraight
         }
+    }
+
+    function moveLeft(){
+        isGoingLeft = true
+        leftTimerId = setInterval(function(){
+            doodlerLeftSpace -= 5
+            doodler.style.left = doodlerLeftSpace + 'px'
+        }, 30)
     }
 
     function start(){
@@ -108,6 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
             createDoodler()
             setInterval(movePlatforms, 30)
             jump()
+            document.addEventListener('keyup', control)
         }
     }
 
