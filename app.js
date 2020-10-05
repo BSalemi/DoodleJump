@@ -47,13 +47,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function movePlatforms(){
-        if(doodlerBottomSpace > 200){
+    function movePlatforms() {
+        if (doodlerBottomSpace > 200) {
             platforms.forEach(platform => {
-                platform.bottom -= 4
-                let visual = platform.visual
-                visual.style.bottom = platform.bottom + 'px'
-            })
+              platform.bottom -= 4
+              let visual = platform.visual
+              visual.style.bottom = platform.bottom + 'px'
+    
+              if(platform.bottom < 10) {
+                let firstPlatform = platforms[0].visual
+                firstPlatform.classList.remove('platform')
+                platforms.shift()
+                console.log(platforms)
+
+                let newPlatform = new Platform(600)
+                platforms.push(newPlatform)
+              }
+          }) 
         }
     }
 
@@ -101,10 +111,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function control(e){
         if(e.key === "ArrowLeft"){
             moveLeft()
-        } else if(e.key="ArrowRight"){
+        } else if(e.key === "ArrowRight"){
             moveRight()
         } else if(e.key === "ArrowUp"){
-            // moveStraight
+            moveStraight()
         }
     }
 
@@ -135,6 +145,14 @@ document.addEventListener('DOMContentLoaded', () => {
             } else moveLeft()
         }, 30)
     }
+
+    function moveStraight(){
+        isGoingRight = false
+        isGoingLeft = false
+        clearInterval(rightTimerId)
+        clearInterval(leftTimerId)
+    }
+
     function start(){
         if(!isGameOver){
             createPlatforms()
