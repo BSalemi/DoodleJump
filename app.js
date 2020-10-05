@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         upTimerId,
         downTimerId,
         leftTimerId,
+        rightTimerId,
         isJumping = true,
         isGoingLeft = false,
         isGoingRight = false
@@ -101,20 +102,39 @@ document.addEventListener('DOMContentLoaded', () => {
         if(e.key === "ArrowLeft"){
             moveLeft()
         } else if(e.key="ArrowRight"){
-            //move right
+            moveRight()
         } else if(e.key === "ArrowUp"){
             // moveStraight
         }
     }
 
     function moveLeft(){
+        if(isGoingRight){
+            clearInterval(rightTimerId)
+            isGoingRight = false
+        }
         isGoingLeft = true
         leftTimerId = setInterval(function(){
-            doodlerLeftSpace -= 5
-            doodler.style.left = doodlerLeftSpace + 'px'
+            if(doodlerLeftSpace >= 0){
+                doodlerLeftSpace -= 5
+                doodler.style.left = doodlerLeftSpace + 'px'
+            } else moveRight()
         }, 30)
     }
 
+    function moveRight(){
+        if(isGoingLeft){
+            clearInterval(leftTimerId)
+            isGoingLeft = false
+        }
+        isGoingRight = true
+        rightTimerId = setInterval(function(){
+            if(doodlerLeftSpace <= 340){
+                doodlerLeftSpace += 5
+                doodler.style.left = doodlerLeftSpace + 'px'
+            } else moveLeft()
+        }, 30)
+    }
     function start(){
         if(!isGameOver){
             createPlatforms()
